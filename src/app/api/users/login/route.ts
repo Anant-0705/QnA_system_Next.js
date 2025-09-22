@@ -1,10 +1,7 @@
 import {connectToDatabase} from "@/dbConfig/dbConfig";
-import Users from "../../../../models/userModel"
+import User from "@/models/userModel";
 import { NextRequest,NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import User from "../../../../models/userModel";
-import { NextBuildContext } from "next/dist/build/build-context";
-
 import jwt from "jsonwebtoken"
 
 
