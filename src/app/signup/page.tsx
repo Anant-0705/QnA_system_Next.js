@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 import  {useRouter} from "next/navigation";
 import axios from "axios";
+import toast from "react-hot-toast";
 
  
 
@@ -21,11 +22,13 @@ export default function signupage() {
       try {
           const response=await axios.post("/api/users/signup",user);
           if(response.data.success){
-              router.push("/profile");
+              toast.success("Account created successfully!");
+              router.push("/login");
           }
           console.log("User signed up successfully",response.data);
-      } catch (error) {
+      } catch (error:any) {
           console.error("Error signing up:",error);
+          toast.error(error.response?.data?.error || "Signup failed");
       } finally {
           setButtonDisabled(false);
       }
@@ -91,19 +94,20 @@ export default function signupage() {
       </label>
       <button 
         onClick={onSignup}
-        type="submit"
+        type="button"
+        disabled={buttonDisabled}
         style={{
         width: '100%',
         padding: '10px',
-        backgroundColor: '#007cba',
+        backgroundColor: buttonDisabled ? '#ccc' : '#007cba',
         color: 'white',
         border: 'none',
         borderRadius: '4px',
-        cursor: 'pointer',
+        cursor: buttonDisabled ? 'not-allowed' : 'pointer',
         marginBottom: '10px'
         }}
       >
-        Signup
+        {buttonDisabled ? 'Creating Account...' : 'Signup'}
       </button>   
       </form>
       <Link href="/login" style={{ display: 'block', textAlign: 'center', color: '#007cba' }}>

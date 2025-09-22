@@ -2,19 +2,17 @@ import {connectToDatabase} from "@/dbConfig/dbConfig";
 import User from "@/models/userModel";
 import { NextRequest,NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
-
-
-
-connectToDatabase()
-
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
     try{
-        const reqbody=await req.json();
+        await connectToDatabase();
+        
+        const reqbody=await request.json();
         const{email,password}=reqbody;
         console.log(reqbody);
-        // check if user exists
+        
+        // Check if user exists in database
         const user= await User.findOne({email})
         if(!user){
             return NextResponse.json({error:"User not found"},{status:404});
@@ -31,7 +29,7 @@ export async function POST(req: NextRequest) {
             email:user.email
 
         }
-        const token = jwt.sign(tokenData, process.env.JWT_SECRET_KEY!, {expiresIn:"1d"});
+        const token = jwt.sign(tokenData, process.env.JWT_SECRET_KEY!, {expiresIn:"1h"});
         const  response=NextResponse.json({
             message:"User logged in successfully",
             success:true,
@@ -42,4 +40,4 @@ export async function POST(req: NextRequest) {
     }catch(error:any){
         return NextResponse.json({error:error.message},{status:500});
     }
-}
+} 

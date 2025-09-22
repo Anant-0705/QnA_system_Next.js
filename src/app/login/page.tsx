@@ -3,9 +3,8 @@ import Link from "next/link";
 import React from "react";
 import  {useRouter} from "next/navigation";
 import axios from "axios";
-import router from "next/dist/shared/lib/router/router";
+
 import toast from "react-hot-toast";
-import { set } from "mongoose";
 
 export default function loginpage() {
    const router=useRouter();
@@ -17,25 +16,22 @@ export default function loginpage() {
 
   const[buttonDisabled,setButtonDisabled]=React.useState(false);
   const[loading,setLoading]=React.useState(false);
-  const onLogin =async()=>{
-    setButtonDisabled(true);
-    setLoading(true);
+  
+  
+  
+  const onLogin=async()=>{
     try {
-      const response = await axios.post('/api/users/login', user);
+      const response = await axios.post("/api/users/login",user);
       if(response.data.success){
-        toast.success("User logged in successfully");
-        router.push('/profile');
-        console.log("User logged in successfully",response.data);
+        toast.success("Login successful");
+        router.push("/profile")
       }
     } catch (error:any) {
-      console.error("Error logging in:", error.message);
-      toast.error(error.message);
+      console.log("Unable to login",error.message);
+      toast.error("Login failed");
+    }finally{
+      setLoading(false);
     }
-    finally{
-      setButtonDisabled(false);
-      setLoading(false);''
-    }
-
   }
   return (
     <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
@@ -73,22 +69,22 @@ export default function loginpage() {
             }} 
           />
         </label>
-        <Link
-          href="/profile"
+        <button
           onClick={onLogin}
-          type="submit"
+          disabled={buttonDisabled}
+          type="button"
           style={{
             width: '100%',
             padding: '10px',
-            backgroundColor: '#007bff',
+            backgroundColor: buttonDisabled ? '#ccc' : '#007bff',
             color: 'white',
             border: 'none',
             borderRadius: '4px',
-            cursor: 'pointer',
+            cursor: buttonDisabled ? 'not-allowed' : 'pointer',
             marginBottom: '15px'
           }}      >
           {loading?"Loading...":"Login"}
-        </Link>
+        </button>
       </form>
       <Link 
         href="/signup"
